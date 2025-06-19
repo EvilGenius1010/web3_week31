@@ -1,10 +1,11 @@
 hidden = ["target", ".cargo"]
 
 entrypoint = "src/main.rs"
-modules = ["rust-stable"]
+modules = ["nodejs-20", "rust-nightly", "rust-stable"]
 
 [nix]
 channel = "stable-24_05"
+packages = ["anchor", "solana-cli", "vim", "typescript", "cliquer"]
 
 [gitHubImport]
 requiredFiles = [".replit"]
