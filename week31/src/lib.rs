@@ -14,17 +14,16 @@ use solana_program::{
 
 entrypoint!(program_counter_contract);
 
-#[derive(BorshSerialize,BorshDeserialize)]
-struct InstructionType{
+#[derive(BorshSerialize, BorshDeserialize)]
+enum InstructionType {
     Increment(u32),
-    Decrement(u32)
+    Decrement(u32),
 }
 
-#[derive(BorshSerialize,BorshDeserialize)]
-struct Counter{
-    count:u32
+#[derive(BorshSerialize, BorshDeserialize)]
+struct Counter {
+    count: u32,
 }
-
 
 pub fn program_counter_contract(
     account_addr: &Pubkey,
@@ -33,30 +32,27 @@ pub fn program_counter_contract(
 ) -> ProgramResult {
     msg!("Testing ");
 
-    let acc_iter = next_account_info(accounts.iter())?;
-
+    let acc_iter = next_account_info(&mut accounts.iter())?;
 
     let instruction_type = InstructionType::try_from_slice(instruction_data)?;
 
     let mut counter_data = Counter::try_from_slice(&acc_iter.data.borrow())?;
 
-    match instruction_type{
-        InstructionType::Increment(val)=>{
-            msg!("Executing increase {}",val);
-            counter_data.count+=val;
+    match instruction_type {
+        InstructionType::Increment(val) => {
+            msg!("Executing increase {}", val);
+            counter_data.count += val;
         }
 
-        InstructionType::Decrement(val)=>{
-            msg!("Executing decrease {}",val);
-            counter_data.count-=val;
+        InstructionType::Decrement(val) => {
+            msg!("Executing decrease {}", val);
+            counter_data.count -= val;
         }
-
-
-        counter_data.serialize(&mut *acc_iter.data.borrow_mut());
-
-        msg!("value mutation successful!");
     }
-    
+
+    counter_data.serialize(&mut *acc_iter.data.borrow_mut());
+
+    msg!("value mutation successful!");
     // match acc_iter {
     //     Ok(account_info) => {
     //         msg!(
